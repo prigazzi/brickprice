@@ -1,0 +1,63 @@
+#!/usr/bin/php
+<?php
+use Goutte\Client;
+use Symfony\Component\DomCrawler\Crawler;
+
+date_default_timezone_set('Europe/Amsterdam');
+include __DIR__.'/../vendor/autoload.php';
+
+$options = getopt("", ["set:", "filename::"]);
+
+if (empty($options['set'])) {
+	throw new \InvalidArgumentException('You need to specify a set with --set.');
+}
+
+$options['filename'] = isset($options['filename']) ?
+	'data/'.$options['filename'] :
+	'data/'.$options['set']."-price-guide.html";
+
+if (!file_exists($options['filename'])) {
+	$client = new Client();
+	$crawler = $client->request(
+		'GET',
+		'https://www.bricklink.com/catalogPG.asp?S='.$options['set'].'-1'
+	);
+	file_put_contents($options['filename'], $crawler->html());
+}
+
+$html = file_get_contents($options['filename']);
+$crawler = new Crawler();
+$crawler->addHtmlContent($html);
+
+$titles = $crawler->filterXPath('//*[@id="id-main-legacy-table"]/tr/td/table[3]/tr[4]/td[2]/table[position() mod 4 = 1]/tr/td/font/b/text()');
+
+$months = [];
+foreach ($titles as $index => $element) {
+	++$index;
+
+	$string = $element->C14N();
+	$month = [
+		'title' => $string,
+		'date' => strtotime(implode(' ', mb_split('\s', $string)))
+	];
+
+	$i = $index + (3 * ($index - 1));
+	$prices = $crawler->filterXPath('//*[@id="id-main-legacy-table"]/tr/td/table[3]/tr[4]/td[2]/table['.($i + 2).']/tr[1]/td[1]/table[1]/tr[count(td) = 2]/td/descendant-or-self::*/child::text()');
+
+	$keys = [];
+	$values = [];
+	foreach ($prices as $key => $value) {
+		switch ($key % 2) {
+			case 0:
+				$keys[] = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u', '', $value->C14N());
+				break;
+			case 1:
+				$values[] = preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u', '', $value->C14N());
+				break;
+		}
+	}
+
+	$months[] = array_merge($month, array_combine($keys, $values));
+}
+
+echo json_encode($months, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
