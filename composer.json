@@ -1,8 +1,15 @@
 {
     "require": {
-        "fabpot/goutte": "^3.2"
+        "fabpot/goutte": "^3.2",
+        "php-amqplib/php-amqplib": "^2.6"
     },
     "require-dev": {
     	"phpunit/phpunit": "^6.1"
+    },
+    "autoload": {
+        "\\Retriever": "src/Retriever/"
+    },
+    "autoload-dev": {
+        "\\Retriever\\Tests": "tests/Retriever/"
     }
 }

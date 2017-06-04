@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<phpunit beStrictAboutChangesToGlobalState="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="true"
+         processIsolation="false"
+         stopOnError="true"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         stopOnRisky="false"
+         verbose="true">
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true"
+                   processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="php-coverage" lowUpperBound="60" highLowerBound="90"/>
+    </logging>
+    <testsuites>
+        <testsuite name="All">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>tests/unit</directory>
+        </testsuite>
+        <testsuite name="Unit.Application">
+            <directory>tests/unit/Application</directory>
+        </testsuite>
+        <testsuite name="Unit.Domain">
+            <directory>tests/unit/Domain</directory>
+        </testsuite>
+        <testsuite name="Unit.Infrastructure">
+            <directory>tests/unit/Infrastructure</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
