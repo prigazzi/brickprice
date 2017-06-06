@@ -8,13 +8,19 @@ class WorkRequestTest extends TestCase
 {
     public function setUp()
     {
-        $this->workRequest = new WorkRequest('documenta.html');
+        $this->workRequest = new WorkRequest(
+            'http://domain.com',
+            'document-a.html'
+        );
     }
 
     public function test_WorkRequest_is_immutable()
     {
-        $newRequest = $this->workRequest->withDocument('documentb.html');
+        $newRequest1 = $this->workRequest->withDocument('http://domainb.com');
+        $this->assertNotEquals($newRequest1, $this->workRequest);
 
-        $this->assertNotEquals($newRequest, $this->workRequest);
+        $newRequest2 = $this->workRequest->withDestination('document-b.html');
+        $this->assertNotEquals($newRequest2, $this->workRequest);
+        $this->assertNotEquals($newRequest1, $newRequest2);
     }
 }
