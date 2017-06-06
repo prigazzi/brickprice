@@ -1,15 +1,20 @@
 {
     "require": {
         "fabpot/goutte": "^3.2",
-        "php-amqplib/php-amqplib": "^2.6"
+        "php-amqplib/php-amqplib": "^2.6",
+        "nategood/commando": "*"
     },
     "require-dev": {
     	"phpunit/phpunit": "^6.1"
     },
     "autoload": {
-        "\\Retriever": "src/Retriever/"
+        "psr-4": {
+            "Retriever\\": "src/Retriever/"
+        }
     },
     "autoload-dev": {
-        "\\Retriever\\Tests": "tests/Retriever/"
+        "psr-4": {
+            "Retriever\\Tests\\": "tests/unit/Retriever/"
+        }
     }
 }
