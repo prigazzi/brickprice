@@ -1,0 +1,29 @@
+#!/usr/local/bin/php
+<?php
+namespace Retriever\Application;
+
+use Retriever\Infrastructure\Persistence\SQLiteWorkRequestRepository;
+use Commando\Command;
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+$command = new Command();
+$command->option()
+    ->require()
+    ->describedAs('The document to be requested');
+$command->option('d')
+    ->aka('destination')
+    ->require()
+    ->describedAs('The destination for the requested document');
+
+$document = $command[0];
+$destination = $command['destination'];
+
+$databaseFile = __DIR__.'/../../data/retriever.sqlite';
+$repository = new SQLiteWorkRequestRepository($databaseFile);
+
+$scheduler = new Scheduler($repository);
+$scheduledRequest = $scheduler->scheduleRequest($document, $destination);
+
+echo "The document {$scheduledRequest->document()} was added ".
+     "and will be saved as as {$scheduledRequest->destination()}.\n";
