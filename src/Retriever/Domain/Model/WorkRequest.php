@@ -1,14 +1,21 @@
 <?php
+declare(strict_types=1);
 namespace Retriever\Domain\Model;
 
 class WorkRequest
 {
-    private $document = '';
+    private $document;
+    private $destination;
+    private $requestedOn;
 
-    public function __construct($document, $destination)
-    {
+    public function __construct(
+        string $document,
+        string $destination,
+        string $requestedOn = ''
+    ) {
         $this->document = $document;
         $this->destination = $destination;
+        $this->requestedOn = $this->validateDate($requestedOn);
     }
 
     public function document()
@@ -19,6 +26,11 @@ class WorkRequest
     public function destination()
     {
         return $this->destination;
+    }
+
+    public function requestedOn()
+    {
+        return $this->requestedOn->format(\DateTime::ISO8601);
     }
 
     public function withDocument(string $newDocument)
@@ -35,5 +47,25 @@ class WorkRequest
         $newWorkRequest->destination = $newDestination;
 
         return $newWorkRequest;
+    }
+
+    private function validateDate(string $date)
+    {
+        if (empty($date)) {
+            return new \DateTime();
+        }
+
+        $date = \DateTime::createFromFormat(
+            \DateTime::ISO8601,
+            $date
+        );
+
+        if ($date === false) {
+            throw new \InvalidArgumentException(
+                'Invalid Date format, should be '.\DateTime::ISO8601
+            );
+        }
+
+        return $date;
     }
 }

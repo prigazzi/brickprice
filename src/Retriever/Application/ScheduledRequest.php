@@ -4,10 +4,18 @@ namespace Retriever\Application;
 
 class ScheduledRequest
 {
-    public function __construct($document, $destination)
-    {
+    private $document;
+    private $destination;
+    private $scheduledOn;
+
+    public function __construct(
+        string $document,
+        string $destination
+        string $scheduledOn
+    ) {
         $this->document = $document;
         $this->destination = $destination;
+        $this->scheduledOn = $scheduledOn;
     }
 
     public function document()
@@ -18,5 +26,10 @@ class ScheduledRequest
     public function destination()
     {
         return $this->destination;
+    }
+
+    public function scheduledOn()
+    {
+        return $this->scheduledOn;
     }
 }

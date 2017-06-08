@@ -23,4 +23,26 @@ class WorkRequestTest extends TestCase
         $this->assertNotEquals($newRequest2, $this->workRequest);
         $this->assertNotEquals($newRequest1, $newRequest2);
     }
+
+    public function test_that_an_exception_is_thrown_when_date_is_invalid()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $workRequest = new WorkRequest(
+                'http://google.com',
+                'document.google.html',
+                '20011005'
+        );
+    }
+
+    public function test_a_valid_time_is_assigned_automatically()
+    {
+        $this->assertInstanceOf(
+            \DateTime::class,
+            \DateTime::createFromFormat(
+                \DateTime::ISO8601,
+                $this->workRequest->requestedOn()
+            )
+        );
+    }
 }
