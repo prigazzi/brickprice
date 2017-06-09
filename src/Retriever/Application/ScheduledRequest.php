@@ -10,7 +10,7 @@ class ScheduledRequest
 
     public function __construct(
         string $document,
-        string $destination
+        string $destination,
         string $scheduledOn
     ) {
         $this->document = $document;
@@ -18,17 +18,17 @@ class ScheduledRequest
         $this->scheduledOn = $scheduledOn;
     }
 
-    public function document()
+    public function document() : string
     {
         return $this->document;
     }
 
-    public function destination()
+    public function destination() : string
     {
         return $this->destination;
     }
 
-    public function scheduledOn()
+    public function scheduledOn() : string
     {
         return $this->scheduledOn;
     }

@@ -19,7 +19,8 @@ class Scheduler
 
         return new ScheduledRequest(
             $workRequest->document(),
-            $workRequest->destination()
+            $workRequest->destination(),
+            $workRequest->requestedOn()
         );
     }
 }

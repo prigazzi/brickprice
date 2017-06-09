@@ -18,17 +18,17 @@ class WorkRequest
         $this->requestedOn = $this->validateDate($requestedOn);
     }
 
-    public function document()
+    public function document() : string
     {
         return $this->document;
     }
 
-    public function destination()
+    public function destination() : string
     {
         return $this->destination;
     }
 
-    public function requestedOn()
+    public function requestedOn() : string
     {
         return $this->requestedOn->format(\DateTime::ISO8601);
     }
