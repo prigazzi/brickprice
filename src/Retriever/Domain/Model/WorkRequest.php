@@ -30,7 +30,7 @@ class WorkRequest
 
     public function requestedOn() : string
     {
-        return $this->requestedOn->format(\DateTime::ISO8601);
+        return $this->requestedOn->format(\DateTime::ATOM);
     }
 
     public function withDocument(string $newDocument)
@@ -56,13 +56,13 @@ class WorkRequest
         }
 
         $date = \DateTime::createFromFormat(
-            \DateTime::ISO8601,
+            \DateTime::ATOM,
             $date
         );
 
         if ($date === false) {
             throw new \InvalidArgumentException(
-                'Invalid Date format, should be '.\DateTime::ISO8601
+                'Invalid Date format, should be '.\DateTime::ATOM
             );
         }
 

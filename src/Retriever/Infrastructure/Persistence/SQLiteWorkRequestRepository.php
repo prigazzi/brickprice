@@ -17,9 +17,9 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
     {
         $this->database->exec("
           INSERT INTO RETRIEVER_WORKREQUEST
-          (workrequest_document, workrequest_destination)
+          (workrequest_document, workrequest_destination, workrequest_requestedOn)
           VALUES
-          ('{$request->document()}', '{$request->destination()}')
+          ('{$request->document()}', '{$request->destination()}', '{$request->requestedOn()}')
         ");
 
         return $request;
@@ -31,7 +31,8 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
             CREATE TABLE IF NOT EXISTS RETRIEVER_WORKREQUEST (
                 workrequest_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 workrequest_document VARCHAR(255) NOT NULL,
-                workrequest_destination VARCHAR(255) NOT NULL
+                workrequest_destination VARCHAR(255) NOT NULL,
+                workrequest_requestedOn CHAR(25)
             )
         ");
 

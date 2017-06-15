@@ -40,7 +40,7 @@ class WorkRequestTest extends TestCase
         $this->assertInstanceOf(
             \DateTime::class,
             \DateTime::createFromFormat(
-                \DateTime::ISO8601,
+                \DateTime::ATOM,
                 $this->workRequest->requestedOn()
             )
         );
