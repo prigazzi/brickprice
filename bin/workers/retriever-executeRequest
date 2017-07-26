@@ -1,0 +1,12 @@
+#!/usr/local/bin/php
+<?php
+namespace Retriever\Application;
+
+use Retriever\Infrastructure\Persistence\SQLiteWorkRequestRepository;
+use Commando\Command;
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+$databaseFile = __DIR__.'/../../data/retriever.sqlite';
+$repository = new SQLiteWorkRequestRepository($databaseFile);
+$scheduler = new Scheduler($repository);

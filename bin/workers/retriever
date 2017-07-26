@@ -1,0 +1,21 @@
+#!/usr/local/bin/php
+<?php
+namespace Retriever\Application;
+
+use Commando\Command;
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+$command = new Command();
+$command->option()
+    ->require()
+    ->describedAs('The document to be requested');
+$command->option('d')
+    ->aka('destination')
+    ->require()
+    ->describedAs('The destination for the requested document');
+
+$document = $command[0];
+$destination = $command['destination'];
+
+echo "The document {$document} was saved as {$destination}.\n";
