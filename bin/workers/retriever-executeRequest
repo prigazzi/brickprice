@@ -2,11 +2,30 @@
 <?php
 namespace Retriever\Application;
 
-use Retriever\Infrastructure\Persistence\SQLiteWorkRequestRepository;
 use Commando\Command;
+use Goutte\Client;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-$databaseFile = __DIR__.'/../../data/retriever.sqlite';
-$repository = new SQLiteWorkRequestRepository($databaseFile);
-$scheduler = new Scheduler($repository);
+$command = new Command();
+$command->option()
+    ->require()
+    ->describedAs('The document to be requested');
+$command->option('d')
+    ->aka('destination')
+    ->require()
+    ->describedAs('The destination for the requested document');
+
+$document = $command[0];
+$destinationFinal = $command['destination'];
+$destinationDirectory = dirname($destinationFinal);
+
+if (is_writable($destinationDirectory) === false) {
+    throw new \InvalidArgumentException("The destination $destinationFinal is not writable");
+}
+
+$client = new Client();
+$crawler = $client->request('GET', $document);
+file_put_contents($destinationFinal, $crawler->html());
+
+echo "The document {$document} was saved as {$destinationFinal}.\n";
