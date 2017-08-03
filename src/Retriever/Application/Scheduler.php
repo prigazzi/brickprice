@@ -12,7 +12,7 @@ class Scheduler
         $this->repository = $repository;
     }
 
-    public function scheduleRequest($document, $destination)
+    public function scheduleRequest(string $document, string $destination): ScheduledRequest
     {
         $workRequest = new WorkRequest($document, $destination);
         $this->repository->add($workRequest);
@@ -22,5 +22,10 @@ class Scheduler
             $workRequest->destination(),
             $workRequest->requestedOn()
         );
+    }
+
+    public function remainingRequestsExist()
+    {
+        return $this->repository->has();
     }
 }

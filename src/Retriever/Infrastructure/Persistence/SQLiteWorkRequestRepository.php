@@ -25,6 +25,22 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
         return $request;
     }
 
+    public function has()
+    {
+        $result = $this->database->query("
+            SELECT COUNT(workrequest_id) as total
+            FROM RETRIEVER_WORKREQUEST
+        ");
+
+        if ($result->numColumns() === 0 && $result->columnType(0) === SQLITE3_NULL) {
+            return null;
+        }
+
+        $amount = $result->fetchArray();
+
+        return $amount['total'];
+    }
+
     private function createTable()
     {
         $isValid = $this->database->exec("
@@ -32,7 +48,8 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
                 workrequest_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 workrequest_document VARCHAR(255) NOT NULL,
                 workrequest_destination VARCHAR(255) NOT NULL,
-                workrequest_requestedOn CHAR(25)
+                workrequest_requestedOn CHAR(25),
+                workrequest_processedOn CHAR(25)
             )
         ");
 
