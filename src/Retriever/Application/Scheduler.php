@@ -36,6 +36,15 @@ class Scheduler
         return $this->convertRequestToScheduled($workRequest);
     }
 
+    public function acknowledgeRequest(ScheduledRequest $request)
+    {
+        $this->repository->acknowledgeWorkRequestByParams(
+            $request->document(),
+            $request->destination(),
+            $request->scheduledOn()
+        );
+    }
+
     private function convertRequestToScheduled(WorkRequest $workRequest)
     {
         return new ScheduledRequest(

@@ -30,7 +30,11 @@ while ($scheduler->remainingRequestsExist())
     }
 
     fclose($pipes[0]);
+    
     $successful = proc_close($process);
+    if ($successful !== 0) {
+        exit($successful);
+    }
 
-    exit($successful);
+    $scheduler->acknowledgeRequest($request);
 }

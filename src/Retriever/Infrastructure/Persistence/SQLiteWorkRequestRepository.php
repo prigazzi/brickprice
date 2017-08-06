@@ -7,6 +7,9 @@ use Retriever\Domain\Model\WorkRequestRepositoryInterface;
 
 class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
 {
+    /** @var \Sqlite3 */
+    private $database = null;
+    
     public function __construct(string $databaseFile)
     {
         $this->database = new \Sqlite3($databaseFile);
@@ -24,6 +27,25 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
 
         return $request;
     }
+
+    public function acknowledgeWorkRequestByParams(
+        string $document,
+        string $destination,
+        string $scheduledOn
+    )
+    {
+        return $this->database->exec("
+            UPDATE
+                RETRIEVER_WORKREQUEST
+            SET
+                workrequest_processedOn = date('now')
+            WHERE
+                workrequest_document = '{$document}' AND
+                workrequest_destination = '{$destination}' AND
+                workrequest_requestedOn = '{$scheduledOn}'
+        ");
+    }
+
 
     public function hasUnprocessedRequests()
     {
