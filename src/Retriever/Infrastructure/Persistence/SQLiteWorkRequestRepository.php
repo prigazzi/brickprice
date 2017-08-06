@@ -25,11 +25,15 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
         return $request;
     }
 
-    public function has()
+    public function hasUnprocessedRequests()
     {
         $result = $this->database->query("
-            SELECT COUNT(workrequest_id) as total
-            FROM RETRIEVER_WORKREQUEST
+            SELECT
+                COUNT(workrequest_id) as total
+            FROM
+                RETRIEVER_WORKREQUEST
+            WHERE
+                workrequest_processedOn is NULL
         ");
 
         if ($result->numColumns() === 0 && $result->columnType(0) === SQLITE3_NULL) {
@@ -39,6 +43,33 @@ class SQLiteWorkRequestRepository implements WorkRequestRepositoryInterface
         $amount = $result->fetchArray();
 
         return $amount['total'];
+    }
+
+    public function oldestRequest()
+    {
+        $result = $this->database->query("
+            SELECT
+                workrequest_document,
+                workrequest_destination,
+                workrequest_requestedOn
+            FROM
+                RETRIEVER_WORKREQUEST
+            WHERE
+                workrequest_processedOn is NULL
+            LIMIT 1
+        ");
+
+        if ($result->numColumns() === 0 && $result->columnType(0) === SQLITE3_NULL) {
+            return null;
+        }
+
+        $workRequestArray = $result->fetchArray();
+
+        return new WorkRequest(
+            $workRequestArray['workrequest_document'],
+            $workRequestArray['workrequest_destination'],
+            $workRequestArray['workrequest_requestedOn']
+        );
     }
 
     private function createTable()

@@ -17,15 +17,31 @@ class Scheduler
         $workRequest = new WorkRequest($document, $destination);
         $this->repository->add($workRequest);
 
+        return $this->convertRequestToScheduled($workRequest);
+    }
+
+    public function remainingRequestsExist()
+    {
+        return (bool)$this->repository->hasUnprocessedRequests();
+    }
+
+    public function retrieveScheduledRequest()
+    {
+        $workRequest = $this->repository->oldestRequest();
+
+        if ($workRequest === null) {
+            return null;
+        }
+
+        return $this->convertRequestToScheduled($workRequest);
+    }
+
+    private function convertRequestToScheduled(WorkRequest $workRequest)
+    {
         return new ScheduledRequest(
             $workRequest->document(),
             $workRequest->destination(),
             $workRequest->requestedOn()
         );
-    }
-
-    public function remainingRequestsExist()
-    {
-        return $this->repository->has();
     }
 }

@@ -12,5 +12,25 @@ $scheduler = new Scheduler($repository);
 
 while ($scheduler->remainingRequestsExist())
 {
-    $scheduler->executeRequest();
+    $request = $scheduler->retrieveScheduledRequest();
+    $process_call = __DIR__."/retriever-executeRequest {$request->document()} --destination {$request->destination()}";
+
+    $process = proc_open(
+        $process_call,
+        [
+            0 => ['pipe', 'r'],
+            1 => ['file', '/tmp/retriever-executeRequest.log', 'a'],
+            2 => ['file', '/tmp/retriever-executeRequest-error.log', 'a']
+        ],
+        $pipes
+    );
+
+    if (is_resource($process) === false) {
+        exit(1);
+    }
+
+    fclose($pipes[0]);
+    $successful = proc_close($process);
+
+    exit($successful);
 }
