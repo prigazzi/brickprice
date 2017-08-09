@@ -3,6 +3,8 @@
 namespace Retriever\Application;
 
 use Retriever\Infrastructure\Persistence\SQLiteWorkRequestRepository;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -13,28 +15,10 @@ $scheduler = new Scheduler($repository);
 while ($scheduler->remainingRequestsExist())
 {
     $request = $scheduler->retrieveScheduledRequest();
-    $process_call = __DIR__."/retriever-executeRequest {$request->document()} --destination {$request->destination()}";
-
-    $process = proc_open(
-        $process_call,
-        [
-            0 => ['pipe', 'r'],
-            1 => ['file', '/tmp/retriever-executeRequest.log', 'a'],
-            2 => ['file', '/tmp/retriever-executeRequest-error.log', 'a']
-        ],
-        $pipes
+        $process = new Process(
+        __DIR__."/retriever-executeRequest {$request->document()} --destination {$request->destination()}"
     );
-
-    if (is_resource($process) === false) {
-        exit(1);
-    }
-
-    fclose($pipes[0]);
-    
-    $successful = proc_close($process);
-    if ($successful !== 0) {
-        exit($successful);
-    }
-
+    $process->mustRun();
     $scheduler->acknowledgeRequest($request);
+    echo $process->getOutput();
 }

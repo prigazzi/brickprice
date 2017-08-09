@@ -2,7 +2,8 @@
     "require": {
         "fabpot/goutte": "^3.2",
         "php-amqplib/php-amqplib": "^2.6",
-        "nategood/commando": "*"
+        "nategood/commando": "*",
+        "symfony/process": "^3.3"
     },
     "require-dev": {
     	"phpunit/phpunit": "^6.1"
